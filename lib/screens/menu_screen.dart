@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../data/menu_data.dart';
 import '../widgets/categorie_chip.dart';
+import '../widgets/plat_card.dart';
 
 class MenuScreen extends StatefulWidget {
   const MenuScreen({super.key});
@@ -25,9 +26,8 @@ class _MenuScreenState extends State<MenuScreen> {
       body: Column(
         children: [
           _buildBarreCategories(),
-          const Expanded(
-            child: Center(child: Text('Liste des plats')),
-          ),
+          // Expanded : la liste prend toute la hauteur restante sous la barre
+          Expanded(child: _buildListePlats()),
         ],
       ),
     );
@@ -51,6 +51,24 @@ class _MenuScreenState extends State<MenuScreen> {
           );
         }).toList(),
       ),
+    );
+  }
+
+  /// Liste verticale des plats de la catégorie sélectionnée.
+  /// ListView.builder ne construit que les cartes visibles à l'écran.
+  Widget _buildListePlats() {
+    final platsAffiches = platsParCategorie(_categorieSelectionnee);
+
+    if (platsAffiches.isEmpty) {
+      return const Center(child: Text('Aucun plat dans cette catégorie'));
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.all(8),
+      itemCount: platsAffiches.length,
+      itemBuilder: (context, index) {
+        return PlatCard(plat: platsAffiches[index]);
+      },
     );
   }
 }
