@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../models/plat.dart';
+import '../screens/plat_detail_screen.dart';
+import 'plat_image.dart';
 
 /// Carte qui affiche un plat : image, nom, description et prix.
 /// Le même widget est utilisé pour tous les plats (pas de duplication).
@@ -17,45 +19,45 @@ class PlatCard extends StatelessWidget {
     return Card(
       // pour que l'image suive les coins arrondis de la carte
       clipBehavior: Clip.antiAlias,
-      // en paysage : Row (image à gauche, texte à droite)
-      // en portrait : Column (image au-dessus du texte)
-      child: horizontal
-          ? Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SizedBox(width: 150, child: _buildImage()),
-                Expanded(child: _buildInfos()),
-              ],
-            )
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // hauteur fixe pour que toutes les images aient la même taille
-                SizedBox(
-                  height: 160,
-                  width: double.infinity,
-                  child: _buildImage(),
-                ),
-                _buildInfos(),
-              ],
+      // InkWell : rend la carte cliquable (avec l'effet de vague)
+      // et ouvre la page de détail du plat
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PlatDetailScreen(plat: plat),
             ),
+          );
+        },
+        // en paysage : Row (image à gauche, texte à droite)
+        // en portrait : Column (image au-dessus du texte)
+        child: horizontal
+            ? Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SizedBox(width: 150, child: _buildImage()),
+                  Expanded(child: _buildInfos()),
+                ],
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // hauteur fixe pour que toutes les images aient la même taille
+                  SizedBox(
+                    height: 160,
+                    width: double.infinity,
+                    child: _buildImage(),
+                  ),
+                  _buildInfos(),
+                ],
+              ),
+      ),
     );
   }
 
   Widget _buildImage() {
-    return Image.network(
-      plat.imageUrl,
-      fit: BoxFit.cover,
-      // loader pendant le chargement de l'image
-      loadingBuilder: (context, child, progress) {
-        if (progress == null) return child;
-        return const Center(child: CircularProgressIndicator());
-      },
-      // si pas de connexion on met une icône à la place
-      errorBuilder: (context, error, stack) {
-        return const Icon(Icons.restaurant, size: 48);
-      },
-    );
+    return PlatImage(url: plat.imageUrl);
   }
 
   Widget _buildInfos() {

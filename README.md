@@ -14,6 +14,7 @@ Application Flutter qui affiche le menu d'un restaurant par catégories
 - Mode paysage / écran large : grille de cartes avec l'image à gauche
   (`LayoutBuilder` + `GridView`)
 - Fondu au changement de catégorie (`AnimatedSwitcher`)
+- Clic sur une carte : page de détail du plat (`Navigator.push`)
 
 ## Organisation du code
 
@@ -22,10 +23,13 @@ lib/
 ├── main.dart                  // point d'entrée, thème de l'appli
 ├── models/plat.dart           // classe Plat
 ├── data/menu_data.dart        // catégories et plats codés en dur
-├── screens/menu_screen.dart   // écran principal (AppBar, catégories, plats)
+├── screens/
+│   ├── menu_screen.dart       // écran principal (AppBar, catégories, plats)
+│   └── plat_detail_screen.dart // page de détail d'un plat
 └── widgets/
     ├── categorie_chip.dart    // bouton d'une catégorie
-    └── plat_card.dart         // carte réutilisable pour un plat
+    ├── plat_card.dart         // carte réutilisable pour un plat
+    └── plat_image.dart        // image d'un plat (carte + détail)
 ```
 
 ## Lancer le projet

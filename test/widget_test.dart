@@ -44,4 +44,27 @@ void main() {
     }
     tester.view.reset();
   });
+
+  testWidgets('Cliquer sur une carte ouvre la page de détail', (
+    WidgetTester tester,
+  ) async {
+    for (final taille in const [Size(360, 740), Size(800, 360)]) {
+      tester.view.physicalSize = taille;
+      tester.view.devicePixelRatio = 1;
+      await tester.pumpWidget(const RestaurantApp());
+
+      await tester.tap(find.text('Formule Midi'));
+      await tester.pumpAndSettle();
+
+      // le nom du plat est dans l'AppBar et dans la page
+      expect(find.text('Formule Midi'), findsNWidgets(2));
+      expect(find.byType(BackButton), findsOneWidget);
+      expect(tester.takeException(), isNull);
+
+      await tester.tap(find.byType(BackButton));
+      await tester.pumpAndSettle();
+      expect(find.text('Formule Midi'), findsOneWidget);
+    }
+    tester.view.reset();
+  });
 }
