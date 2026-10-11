@@ -54,8 +54,10 @@ class _MenuScreenState extends State<MenuScreen> {
     );
   }
 
-  /// Liste verticale des plats de la catégorie sélectionnée.
-  /// ListView.builder ne construit que les cartes visibles à l'écran.
+  /// Zone des plats de la catégorie sélectionnée.
+  /// LayoutBuilder permet d'adapter l'affichage à la largeur de l'écran :
+  ///  - portrait (écran étroit) : liste verticale de cartes
+  ///  - paysage (écran large) : grille avec l'image à gauche du texte
   Widget _buildListePlats() {
     final platsAffiches = platsParCategorie(_categorieSelectionnee);
 
@@ -63,11 +65,32 @@ class _MenuScreenState extends State<MenuScreen> {
       return const Center(child: Text('Aucun plat dans cette catégorie'));
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(8),
-      itemCount: platsAffiches.length,
-      itemBuilder: (context, index) {
-        return PlatCard(plat: platsAffiches[index]);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 600) {
+          // ListView.builder ne construit que les cartes visibles à l'écran
+          return ListView.builder(
+            padding: const EdgeInsets.all(8),
+            itemCount: platsAffiches.length,
+            itemBuilder: (context, index) {
+              return PlatCard(plat: platsAffiches[index]);
+            },
+          );
+        }
+
+        // chaque carte fait 500px de large max, le nombre de colonnes
+        // s'adapte donc tout seul à la taille de l'écran
+        return GridView.builder(
+          padding: const EdgeInsets.all(8),
+          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: 500,
+            mainAxisExtent: 150,
+          ),
+          itemCount: platsAffiches.length,
+          itemBuilder: (context, index) {
+            return PlatCard(plat: platsAffiches[index], horizontal: true);
+          },
+        );
       },
     );
   }
