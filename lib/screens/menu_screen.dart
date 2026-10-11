@@ -27,7 +27,17 @@ class _MenuScreenState extends State<MenuScreen> {
         children: [
           _buildBarreCategories(),
           // Expanded : la liste prend toute la hauteur restante sous la barre
-          Expanded(child: _buildListePlats()),
+          Expanded(
+            // AnimatedSwitcher : petit fondu quand on change de catégorie.
+            // La clé permet à Flutter de savoir que le contenu a changé.
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 250),
+              child: KeyedSubtree(
+                key: ValueKey(_categorieSelectionnee),
+                child: _buildListePlats(),
+              ),
+            ),
+          ),
         ],
       ),
     );
